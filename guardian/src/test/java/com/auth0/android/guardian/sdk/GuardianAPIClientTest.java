@@ -519,7 +519,7 @@ public class GuardianAPIClientTest {
                 .start(callback);
 
         RecordedRequest request = mockAPI.takeRequest();
-        assertThat(request.getPath(), is(equalTo(String.format("/rich-consents/%s", consentId))));
+        assertThat(request.getPath(), is(equalTo(String.format("/appliance-mfa/rich-consents/%s", consentId))));
     }
 
     private Map<String, Object> bodyFromRequest(RecordedRequest request) throws IOException {
