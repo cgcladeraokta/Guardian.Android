@@ -251,18 +251,7 @@ public class GuardianAPIClient {
      * @return an API client for rich consents
      */
     public RichConsentsAPIClient richConsents(@NonNull PrivateKey privateKey, @NonNull PublicKey publicKey) {
-        // According to the Guardian SDK guidelines, developers must provide either the Guardian domain
-        // or the canonical domain including the `/appliance-mfa` path. However, since Rich Consents is
-        // not an MFA API endpoint, preserving this path will not work.
-        // As a temporary solution, the guardian subdomain and the `/appliance-mfa` path are stripped from the
-        // base URL.
         String guardianUrl = baseUrl.toString();
-        if (guardianUrl.contains("/appliance-mfa")) {
-            guardianUrl = guardianUrl.replace("/appliance-mfa", "");
-        } else {
-            // If path is not /appliance-mfa, '.guardian.' subdomain is stripped
-            guardianUrl = guardianUrl.replace(".guardian.", ".");
-        }
         final HttpUrl url = HttpUrl.parse(guardianUrl);
         return new RichConsentsAPIClient(requestFactory, url, privateKey, publicKey, clientInfo.telemetryInfo);
     }
