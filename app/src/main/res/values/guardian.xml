@@ -1,3 +1,4 @@
 <resources>
-    <string name="guardian_url">https://custom-sns-app-test.guardian.auth0.com</string>
+    <string name="tenant_url">https://dev-jo51o3afnh6qac8u.us.auth0.com</string>
+    <string name="authorizing_client_id">W5VW2HXid3yciRxgoweJBxlsVaoZAwnM</string>
 </resources>
