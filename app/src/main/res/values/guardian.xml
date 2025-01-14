@@ -1,4 +1,3 @@
 <resources>
-    <string name="tenant_url">https://dev-jo51o3afnh6qac8u.us.auth0.com</string>
-    <string name="authorizing_client_id">W5VW2HXid3yciRxgoweJBxlsVaoZAwnM</string>
+    <string name="tenant_url">https://{DOMAIN}</string>
 </resources>
