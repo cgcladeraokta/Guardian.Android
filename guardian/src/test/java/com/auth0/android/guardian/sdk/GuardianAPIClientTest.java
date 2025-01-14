@@ -580,7 +580,7 @@ public class GuardianAPIClientTest {
     }
 
     private void verifyBasicJWT(String jwt) throws SignatureException, NoSuchAlgorithmException, JWTVerificationException, InvalidKeyException, IOException {
-        final String audience = HttpUrl.parse(apiClient.getUrl()).resolve("api/device-accounts").toString();
+        final String audience = HttpUrl.parse(apiClient.getUrl()).resolve("/appliance-mfa/api/device-accounts").toString();
         DecodedJWT payload = verifyJWT(jwt, ENROLLMENT_ID, audience, TWO_HOURS_IN_SECONDS * 1000L);
         assertThat(payload.getSubject(), is(equalTo(ENROLLMENT_USER)));
         assertThat(payload.getClaim("auth0_guardian_accepted").isMissing(), is(equalTo(true)));
@@ -589,7 +589,7 @@ public class GuardianAPIClientTest {
     }
 
     private void verifyAccessApprovalJWT(String jwt, boolean accepted, String rejectReason) throws NoSuchAlgorithmException, SignatureException, JWTVerificationException, InvalidKeyException, IOException {
-        final String audience = HttpUrl.parse(apiClient.getUrl()).resolve("api/resolve-transaction").toString();
+        final String audience = HttpUrl.parse(apiClient.getUrl()).resolve("/appliance-mfa/api/resolve-transaction").toString();
         DecodedJWT payload = verifyJWT(jwt, DEVICE_IDENTIFIER, audience, THIRTY_SECONDS * 1000L);
         assertThat(payload.getSubject(), is(equalTo(CHALLENGE)));
         assertThat(payload.getClaim("auth0_guardian_accepted").asBoolean(), is(equalTo(accepted)));
