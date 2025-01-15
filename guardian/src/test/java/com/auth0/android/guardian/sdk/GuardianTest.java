@@ -254,7 +254,7 @@ public class GuardianTest {
                 .build();
 
         assertThat(guardian.getAPIClient().getUrl(),
-                is(equalTo("https://example.guardian.auth0.com/appliance-mfa")));
+                is(equalTo("https://example.guardian.auth0.com/")));
     }
 
     @Test
@@ -264,7 +264,7 @@ public class GuardianTest {
                 .build();
 
         assertThat(guardian.getAPIClient().getUrl(),
-                is(equalTo("https://example.guardian.auth0.com/appliance-mfa")));
+                is(equalTo("https://example.guardian.auth0.com/")));
     }
 
     @Test
@@ -275,7 +275,7 @@ public class GuardianTest {
                 .build();
 
         assertThat(guardian.getAPIClient().getUrl(),
-                is(equalTo("https://example.guardian.auth0.com/appliance-mfa")));
+                is(equalTo("https://example.guardian.auth0.com/")));
     }
 
     @Test
