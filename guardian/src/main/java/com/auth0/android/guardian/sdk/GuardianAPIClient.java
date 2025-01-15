@@ -296,15 +296,15 @@ public class GuardianAPIClient {
             return url;
         }
 
-        if(url.toString().contains(pathComponent)){
+        if(url.encodedPath().contains("/" + pathComponent)){
             return url;
         }
 
-        if(url.toString().endsWith("guardian.auth0.com")){
+        if(url.host().endsWith("guardian.auth0.com")){
             return url;
         }
 
-        if(url.toString().matches(".*guardian\\.[^.]*\\.auth0\\.com.*")){
+        if(url.host().matches(".*guardian\\.[^.]*\\.auth0\\.com.*")){
             return url;
         }
 

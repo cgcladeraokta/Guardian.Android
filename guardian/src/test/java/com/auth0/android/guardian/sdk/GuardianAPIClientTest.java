@@ -22,6 +22,28 @@
 
 package com.auth0.android.guardian.sdk;
 
+import static com.auth0.android.guardian.sdk.utils.CallbackMatcher.hasNoError;
+import static org.hamcrest.Matchers.blankOrNullString;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
+
 import android.net.Uri;
 import android.os.Build;
 import android.util.Base64;
@@ -72,29 +94,7 @@ import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.mockwebserver.RecordedRequest;
-
-import static com.auth0.android.guardian.sdk.utils.CallbackMatcher.hasNoError;
-import static org.hamcrest.Matchers.blankOrNullString;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.openMocks;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 23, manifest = Config.NONE)
@@ -175,7 +175,7 @@ public class GuardianAPIClientTest {
         richConsentsAPIClient = new RichConsentsAPIClient(requestFactory, Uri.parse(domain), new ClientInfo());
     }
 
-    private OkHttpClient provideOkHttpClient(){
+    private OkHttpClient provideOkHttpClient() {
         final OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
         builder.addInterceptor(new Interceptor() {
@@ -197,7 +197,7 @@ public class GuardianAPIClientTest {
         return builder.build();
     }
 
-    private RequestFactory provideRequestFactory(OkHttpClient okHttpClient){
+    private RequestFactory provideRequestFactory(OkHttpClient okHttpClient) {
         Gson gson = new GsonBuilder().create();
         return new RequestFactory(gson, okHttpClient);
     }
@@ -208,17 +208,6 @@ public class GuardianAPIClientTest {
     }
 
     @Test
-    public void shouldBuildWithUrl() throws Exception {
-        GuardianAPIClient apiClient = new GuardianAPIClient.Builder()
-                .url(Uri.parse("https://example.guardian.auth0.com"))
-                .setRequestFactory(requestFactory)
-                .build();
-
-        assertThat(apiClient.getUrl(),
-                is(equalTo("https://example.guardian.auth0.com/appliance-mfa")));
-    }
-
-    @Test
     public void shouldBuildWithDomain() throws Exception {
         GuardianAPIClient apiClient = new GuardianAPIClient.Builder()
                 .domain("example.guardian.auth0.com")
@@ -226,7 +215,7 @@ public class GuardianAPIClientTest {
                 .build();
 
         assertThat(apiClient.getUrl(),
-                is(equalTo("https://example.guardian.auth0.com/appliance-mfa")));
+                is(equalTo("https://example.guardian.auth0.com/")));
     }
 
     @Test
@@ -258,6 +247,72 @@ public class GuardianAPIClientTest {
         new GuardianAPIClient.Builder()
                 .setRequestFactory(requestFactory)
                 .build();
+    }
+
+    @Test
+    public void shouldNotAddPathComponentToUrlWithGuardianAuth0Suffix() {
+        Uri inputUrl = Uri.parse("https://samples.guardian.auth0.com");
+        String expectedUrl = "https://samples.guardian.auth0.com/";
+
+        GuardianAPIClient apiClient = new GuardianAPIClient.Builder()
+                .url(inputUrl)
+                .setRequestFactory(requestFactory)
+                .build();
+
+        assertEquals(expectedUrl, apiClient.getUrl());
+    }
+
+
+    @Test
+    public void shouldNotAddPathComponentToUrlWithGuardianRegionAuth0Com() {
+        Uri inputUrl = Uri.parse("https://samples.guardian.en.auth0.com");
+        String expectedUrl = "https://samples.guardian.en.auth0.com/";
+
+        GuardianAPIClient apiClient = new GuardianAPIClient.Builder()
+                .url(inputUrl)
+                .setRequestFactory(requestFactory)
+                .build();
+
+        assertEquals(expectedUrl, apiClient.getUrl());
+    }
+
+    @Test
+    public void shouldNotAddPathComponentToCustomUrlWithoutGuardianWithAlreadyAddedPathComponent() {
+        Uri inputUrl = Uri.parse("https://samples.auth0.com/appliance-mfa");
+        String expectedUrl = "https://samples.auth0.com/appliance-mfa";
+
+        GuardianAPIClient apiClient = new GuardianAPIClient.Builder()
+                .url(inputUrl)
+                .setRequestFactory(requestFactory)
+                .build();
+
+        assertEquals(expectedUrl, apiClient.getUrl());
+    }
+
+    @Test
+    public void shouldAddPathComponentToCustomUrlWithoutGuardianWithoutAlreadyAddedPathComponent() {
+        Uri inputUrl = Uri.parse("https://samples.auth0.com");
+        String expectedUrl = "https://samples.auth0.com/appliance-mfa";
+
+        GuardianAPIClient apiClient = new GuardianAPIClient.Builder()
+                .url(inputUrl)
+                .setRequestFactory(requestFactory)
+                .build();
+
+        assertEquals(expectedUrl, apiClient.getUrl());
+    }
+
+    @Test
+    public void shouldAddPathComponentToCustomUrlWithGuardianWithoutAlreadyAddedPathComponent() {
+        Uri inputUrl = Uri.parse("https://samples.guardian.some.thing.auth0.com");
+        String expectedUrl = "https://samples.guardian.some.thing.auth0.com/appliance-mfa";
+
+        GuardianAPIClient apiClient = new GuardianAPIClient.Builder()
+                .url(inputUrl)
+                .setRequestFactory(requestFactory)
+                .build();
+
+        assertEquals(expectedUrl, apiClient.getUrl());
     }
 
     @Test
