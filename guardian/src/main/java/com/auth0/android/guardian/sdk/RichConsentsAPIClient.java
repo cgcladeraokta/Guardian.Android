@@ -91,10 +91,13 @@ public class RichConsentsAPIClient {
     /**
      * Fetches the consent details.
      *
-     * @param consentId        Consent ID, a.k.a. transactionLinkingId.
+     * @param consentId Consent ID, a.k.a. transactionLinkingId.
      * @param transactionToken Transaction token received in the push notification
+     * @param privateKey RSA private key, which can be obtained from enrollment object using enrollment.getSigningKey() used to sign the requests to allow/reject an authentication request
+     * @param publicKey The public key used for enrollment, which can be obtained from enrollment object using enrollment.getPublicKey()
      * @return A GuardianAPIRequest that should be started/executed.
      */
+
     public GuardianAPIRequest<RichConsent> fetch(@NonNull String consentId, @NonNull String transactionToken, PrivateKey privateKey, PublicKey publicKey) {
         final Type type = new TypeToken<GuardianRichConsent>() {
         }.getType();

@@ -1,3 +1,11 @@
+/*
+** THIS IS A SAMPLE CONFIGURATION FILE WITH DUMMY DATA
+**
+** Replace this file with a valid google-services.json
+** downloaded from the Firebase Console with your project details.
+** See: https://console.firebase.google.com
+*/
+
 {
   "project_info": {
     "project_number": "9999999999",

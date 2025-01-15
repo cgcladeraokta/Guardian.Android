@@ -242,7 +242,7 @@ public class Guardian {
 
         /**
          * Set the URL of the Guardian server.
-         * For example {@code https://tenant.guardian.auth0.com/}
+         * For example {@code https://tenant.region.auth0.com/}
          *
          * @param url the url
          * @return itself
@@ -258,7 +258,7 @@ public class Guardian {
 
         /**
          * Set the domain of the Guardian server.
-         * For example {@code tenant.guardian.auth0.com}
+         * For example {@code tenant.region.auth0.com}
          *
          * @param domain the domain name
          * @return itself
